@@ -1,36 +1,48 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 import CartListItem from "../components/CartListItem";
-import cart from "../data/cart";
+import {
+  cartTotalPrice,
+  selectDeliveryPrice,
+  selectSubTotal,
+} from "../store/cartSlice";
 
-const ShoppingCartTotals = () => (
-  <View style={styles.totalsContainer}>
-    <View style={styles.row}>
-      <Text style={styles.text}>Subtotal</Text>
-      <Text style={styles.text}>4444 US$</Text>
-    </View>
+const ShoppingCartTotals = () => {
+  const subTotal = useSelector(selectSubTotal);
+  const deliveryFee = useSelector(selectDeliveryPrice);
+  const totalPrice = useSelector(cartTotalPrice);
 
-    <View style={styles.row}>
-      <Text style={styles.text}>Delivery</Text>
-      <Text style={styles.text}>150 US$</Text>
-    </View>
+  return (
+    <View style={styles.totalsContainer}>
+      <View style={styles.row}>
+        <Text style={styles.text}>Subtotal</Text>
+        <Text style={styles.text}>{subTotal} US$</Text>
+      </View>
 
-    <View style={styles.row}>
-      <Text style={styles.textBold}>Total</Text>
-      <Text style={styles.textBold}>12000 US$</Text>
+      <View style={styles.row}>
+        <Text style={styles.text}>Delivery</Text>
+        <Text style={styles.text}>{deliveryFee} US$</Text>
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.textBold}>Total</Text>
+        <Text style={styles.textBold}>{totalPrice} US$</Text>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const ShoppingCart = () => {
+  const cartItems = useSelector((state) => state.cart.items);
+
   return (
     <>
       <FlatList
-        data={cart}
+        data={cartItems}
         renderItem={({ item }) => <CartListItem cartItem={item} />}
         ListFooterComponent={ShoppingCartTotals}
       />
 
-      {/* Add to cart button */}
       <Pressable style={styles.button}>
         <Text style={styles.buttonText}>Checkout</Text>
       </Pressable>
